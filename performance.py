@@ -24,6 +24,7 @@ class Performance(Strategy):
         perf_resource = current_resource - starting_resource
         return perf_resource
 
-    def set_update_frequency():
+    def set_update_frequency(self):
+        ## TODO ##
 
 

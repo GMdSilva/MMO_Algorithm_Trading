@@ -24,84 +24,52 @@ from price_analysis import Price_analysis
 from strategies import Strategies
 
 ## TODO: FIGURE OUT WAY TO GET RID OF ANNOYING BOX ##
-## TODO: TURN PRICE_ANALYSIS INTO A BETTER CLASS ##
-## EVENTUALLY DO THAT TO GET_DATASET TOO ##
 
 
 
 
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-dict = cons.DF_PRICES_COLS
-played = False
-arr = []
 
 
-(
-    added_down,
-    sold_down,
-    added_up,
-    sold_up,
-    counter,
-) = (0, 0, 0, 0, 0)
 
-(
-    value,
-    sold,
-    added,
-    percent,
-    market,
-    roll,
-    transaction,
-    dt,
-    iso_str,
-    value_up_prev,
-    value_down_prev,
-    percent_diff_down,
-    percent_diff_up,
-    placeholder,
-) = (None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+counter = 0
 
-
-first_value_up_history = [0,0]
-first_value_down_history = [0,0]
+gd_bid = Get_dataset('bid', counter)
+gd_ask = Get_dataset('ask', counter)
+pc_bid = Price_analysis(gd_bid, 'bid')
+pc_ask = Price_analysis(gd_ask, 'ask')
+st_bid = Strategies.Arbitrage(pc_bid, 'bid')
+st_ask = Strategies.Arbitrage(pc_ask, 'ask')
 
 time.sleep(2)
-
-df_prices = utils.load_dataset()
-gd = Get_dataset(arr, first_value_up_history, first_value_down_history, counter, df_prices, sold_up, added_up,
-                  sold_down, added_down, dict)
-
-
-pc = Price_analysis(gd)
-
-bid = Strategies.Arbitrage(pc, 'bid')
-ask = Strategies.Arbitrage(pc, 'ask')
-first_value_up_history = []
-first_value_down_history = []
 
 while 1:
     utils.send_key("enter")
     
     game.click_boxes()
 
-    gd = Get_dataset(arr, first_value_up_history, first_value_down_history, counter, df_prices, sold_up, added_up,
-                  sold_down, added_down, dict)
+    gd_ask = gd_ask.run('ask', counter)
+    gd_bid = gd_bid.run('bid', counter)
 
-    df_prices, sold_up, added_up, sold_down, added_down, first_value_up_history, first_value_down_history =\
-        gd.run(transaction)
+    pc_bid = Price_analysis(gd_bid, 'bid')
+    pc_ask = Price_analysis(gd_ask, 'ask')
 
-    pc = Price_analysis(gd)
+    st_bid = st_bid.trade_flow(pc_bid)
+    st_ask = st_ask.trade_flow(pc_ask)
 
-    #bid = bid.trade_flow(pc)
-    ask = ask.trade_flow(pc)
-
-    if counter % 50 == 0:
+    if counter > 50 and counter % 50 == 0:
         game.timeout_prevention()
 
     plotting.make_plots()
     counter += 1
 
     time.sleep(0.5)
+
+
+
+
+
+
+
 
 
 

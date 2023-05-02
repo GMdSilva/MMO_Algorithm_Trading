@@ -32,7 +32,7 @@ def create_order(new_prices, type):
     for number in str(new_prices):
         utils.send_key(number)
         time.sleep(0.2)
-    utils.click(cons.COORDS['create_offer'][0],cons.COORDS['create_offer'][1])
+    #utils.click(cons.COORDS['create_offer'][0],cons.COORDS['create_offer'][1])
     time.sleep(1)
     utils.send_key('enter')
     time.sleep(2)
@@ -41,7 +41,6 @@ def create_order(new_prices, type):
 def go_to_offers():
     utils.click(cons.COORDS['my_offers'][0], cons.COORDS['my_offers'][1])
     time.sleep(3)
-
 
 def cancel_offer(order_type):
     if order_type == 'ask':

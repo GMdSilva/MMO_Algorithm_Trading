@@ -71,6 +71,22 @@ def get_price_data(arr, first_value_up_history, first_value_down_history):
 
     first_value_up_history.append(up[0])
     first_value_down_history.append(down[0])
-
     return up, down,first_value_up_history,first_value_down_history
+
+def get_price_data_short(arr):
+    i = find_index(arr)
+    b = [0, 1, 2, 3]
+    c = [i + 1, i + 2, i + 3, i + 4]
+    try:
+        up = [arr[i] for i in b]
+        down = [arr[i] for i in c]
+    except:
+        print('failed at ' + str(arr))
+        return -1
+
+    up = sanitize_and_check_numbers(up)
+    down = sanitize_and_check_numbers(down)
+
+    values = [up[0],down[0]]
+    return values
 
