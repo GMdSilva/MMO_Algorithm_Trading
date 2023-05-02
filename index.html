@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="refresh" content="5">
+    <meta charset="UTF-8">
+    <title>Tibia Market</title>
+    <script>
+        setInterval(function(){
+            var img = document.getElementById('myImage');
+            img.src = img.src.split('?')[0] + '?' + Math.random();
+        }, 5000);
+    </script>
+</head>
+<body>
+    <progress id="loadingBar" value="1" max="5"></progress>
+
+    <script>
+        var loadingBar = document.getElementById("loadingBar");
+        var progressValue = 1;
+
+        function updateProgressBar() {
+            loadingBar.value = progressValue;
+            progressValue++;
+
+            if (progressValue > 5) {
+                clearInterval(intervalId);
+            }
+        }
+
+        var intervalId = setInterval(updateProgressBar, 1000);
+    </script>
+    <img src="tibia_market.png" id="myImage">
+</body>
+</html>
