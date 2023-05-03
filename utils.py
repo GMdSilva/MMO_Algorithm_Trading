@@ -6,6 +6,7 @@ import win32api
 import win32con
 from datetime import datetime
 
+import vision as vs
 import cons
 
 
@@ -40,6 +41,16 @@ def sanitize_and_check_numbers(str_arr):
             continue
     return nums
 
+def sanitize_numbers(str_arr):
+    nums = []
+    for s in str_arr:
+        # Remove non-numeric characters
+        s = ''.join(filter(str.isdigit, s))
+        # Convert to integer, skip iteration if not a valid integer within the range
+        num = int(s)
+        nums.append(num)
+    return nums
+
 def get_date():
     dt = datetime.now()
     iso_str = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -50,10 +61,22 @@ def load_dataset():
     return df_prices
 
 def find_index(arr):
-    for i in range(len(arr)):
-        if cons.VAL in arr[i]:
+    for i, value in enumerate(arr):
+        if cons.VAL in value:
             return i
     return -1
+
+def get_offer_list(offer_type):
+    offer_list = vs.capture_text('market_location')
+    index = find_index(offer_list)
+    if offer_type == 'bid':
+        offer_list = offer_list[index + 1:]
+        offer_list = sanitize_and_check_numbers(offer_list)
+    elif offer_type == 'ask':
+        offer_list = offer_list[:index]
+        offer_list = sanitize_and_check_numbers(offer_list)
+    return offer_list
+
 
 def get_price_data(arr, first_value_up_history, first_value_down_history):
     i = find_index(arr)
@@ -90,3 +113,12 @@ def get_price_data_short(arr):
     values = [up[0],down[0]]
     return values
 
+def validate_entity(to_be_validated, type, coords):
+    reference = vs.capture_text(coords)
+    if type == 'number':
+        reference = sanitize_and_check_numbers(reference)
+    if to_be_validated == reference[0]:
+        validation = True
+    else:
+        validation = False
+    return validation

@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime
-
+import typing
 import cons
 import utils
 import vision as vs
@@ -60,7 +60,7 @@ class Get_dataset():
             self.df_prices.to_csv('prices.csv')
         return self
 
-    def run(self, order_type):
+    def run(self, order_type, counter):
         raw_values = vs.capture_text('market_location')
         self.values_up, self.values_down, self.first_value_up_history, self.first_value_down_history =\
             utils.get_price_data(raw_values, self.first_value_up_history, self.first_value_down_history)
@@ -71,8 +71,12 @@ class Get_dataset():
         elif order_type == 'ask':
             self.values = self.values_up
             self.first_value_history = self.first_value_up_history
+        self.counter = counter
 
         self.update_and_save()
 
         return self
+
+
+
 

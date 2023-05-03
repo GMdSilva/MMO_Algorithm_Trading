@@ -4,6 +4,8 @@ import numpy as np
 import pyautogui
 import pytesseract
 
+import game
+import utils
 import cons
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -14,6 +16,7 @@ def capture_text(coords):
                            cons.COORDS[coords][1],
                            cons.COORDS[coords][2],
                            cons.COORDS[coords][3],)
+    game.bye_confirmation_box()
     im = pyautogui.screenshot(region=(x, y, width, height))
     im = cv2.cvtColor(np.array(im), cv2.COLOR_BGR2GRAY)
     im = imutils.resize(im, width=200)
@@ -25,6 +28,8 @@ def capture_text(coords):
     return lines
 
 def read_resources(resource):
+    game.bye_confirmation_box()
     lines = capture_text(resource)
-    resource = lines[0]
-    return resource
+    lines = ''.join(filter(str.isdigit, lines[0]))
+    lines = int(lines)
+    return lines

@@ -22,19 +22,19 @@ class Price_analysis(Get_dataset):
         price_validity = True
         if self.order_type == 'ask':
             if self.current_price > self.second_price:
-                print('Ask price is higher than previous ask, DONT BUY')
+                print(f'Ask price ({self.current_price}) is higher than previous ask ({self.second_price}), DONT BUY')
                 price_validity = False
             if self.prices_mean * 0.9 > self.current_price or \
                     self.prices_mean * 1.1 < self.current_price:
-                print('Ask price is too different from mean, DONT BUY')
+                print(f'Ask price ({self.current_price}) is too different from mean ({self.prices_mean}), DONT BUY')
                 price_validity = False
         elif self.order_type == 'bid':
             if self.current_price < self.second_price:
-                print('Bid price is lower than previous bid, DONT BUY')
+                print(f'Bid price ({self.current_price}) is lower than previous bid ({self.second_price}), DONT BUY')
                 price_validity = False
             if self.prices_mean * 0.9 > self.current_price or \
                     self.prices_mean * 1.1 < self.current_price:
-                print('Bid price is too different from mean, DONT BUY')
+                print(f'Bid price ({self.current_price}) is too different from mean ({self.prices_mean}), DONT BUY')
                 price_validity = False
         return price_validity
 
@@ -54,10 +54,15 @@ class Price_analysis(Get_dataset):
         spread = self.calculate_spread()
         fee = self.calculate_fee()
         profit = ((spread - fee) / (fee)) * 100
+        print(spread-fee)
+        print(profit)
         return profit
 
-    def update_price(self, current_price, order_type):
-        if order_type == 'bid':
-            return current_price + 0
+    def update_price(self, current_price, order_type, shadow_mode):
+        if not shadow_mode:
+            if order_type == 'bid':
+                return current_price + 1
+            else:
+                return current_price - 1
         else:
-            return current_price - 0
+            return current_price

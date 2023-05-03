@@ -8,9 +8,9 @@ WINDOW = 3
 THRESH_UP = 97
 THRESH_DOWN = 103
 MIN_VAL = 10000
-MAX_VAL = 20000
+MAX_VAL = 30000
 BUY_FEE = 0.02  # 2% fee per transaction
-MIN_PROFIT_PERCENTAGE = -100  # minimum % profit required for trade to be worth it
+MIN_PROFIT_PERCENTAGE = 20  # minimum % profit required for trade to be worth it
 OPERATIONS = 2
 BATCH = 25
 PLACEHOLDER = 0
@@ -34,12 +34,16 @@ if PLATFORM == 'desktop':
         'bid': (1095, 870),
         'my_offers': (1514, 958),
         'go_to_market': (1603, 960),
-        'my_ofers_ask_cancel': (1610, 479),
+        'my_offers_ask_cancel': (1610, 479),
         'my_offers_bid_cancel': (1610, 713),
         'my_offers': (1517, 956),
-        'offers': (1267, 528, 50, 281)
+        'offers': (1267, 528, 50, 281),
+        'anon_box': (1506, 913),
+        'price_box': (1277, 882, 43, 13),
+        'gold_box': (959, 948, 79, 18),
+        'coin_box': (1103, 948, 42, 18),
+        'search_box': (961, 911, 37, 12),
     }
-
 else:
     FIGPATH = r'C:\Users\gabri\Dropbox\Aplicativos\My.DropPages\tibiamarkets.droppages.net\Public\tibia_market.png'
     AUDIO = r'C:\Users\gabri\Dropbox\tibia_market_bot\brasil.mp3'
@@ -81,6 +85,6 @@ DF_PRICES_COLS = {
 }
 
 ITEMS_DICT = {
-    0: 'Coin',
-    1: 'Spear'
+    0: 'coin',
+    1: 'spear'
 }
