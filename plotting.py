@@ -7,10 +7,9 @@ from IPython.display import clear_output
 import cons
 
 
-def get_price_data(df, price_type, weekdays, window):
+def get_plot_data(df, price_type, weekdays, window):
     dt = datetime.datetime.now()
     df = pd.read_csv(df)
-
     prices = df.loc[df['Type'] == price_type]
     prices_today = prices.loc[prices['Day'] == weekdays[dt.weekday()]]
 
@@ -48,8 +47,8 @@ def get_price_data(df, price_type, weekdays, window):
     }
 
 def make_plots():
-    price_data_up = get_price_data(cons.DATASET, 'Up', cons.WEEKDAYS, cons.WINDOW)
-    price_data_down = get_price_data(cons.DATASET, 'Down', cons.WEEKDAYS, cons.WINDOW)
+    price_data_up = get_plot_data(cons.DATASET, 'Up', cons.WEEKDAYS, cons.WINDOW)
+    price_data_down = get_plot_data(cons.DATASET, 'Down', cons.WEEKDAYS, cons.WINDOW)
 
     data_to_be_plotted = {
         1: price_data_up['prices_total'],

@@ -3,11 +3,8 @@ from playsound import playsound
 import cons
 import game
 import utils
-import vision
 import vision as vs
 from price_analysis import Price_analysis
-from performance import Performance
-
 
 class Strategies(Price_analysis):
     def __init__(self, pc, order_type, method):
@@ -67,10 +64,9 @@ class Strategies(Price_analysis):
                 if offer == self.price_new:  # if offer is within top 4, we're good #
                     self.duplicate_checker += 1
                     self.index = i
-                    if self.market_timer >= 3 and self.market_timer % 3 == 0:
+                    if self.market_timer >= 5 and self.market_timer % 5 == 0:
                         print(f'{self.order_type} Offer is at index {self.index}!')
                     if self.index < 3:
-                        print(f'index is {self.index}, so we are goood')
                         self.found = True
                         return self
 
@@ -85,7 +81,7 @@ class Strategies(Price_analysis):
                 for offer in my_offers:  # check my offers line by line #
                     if offer == self.price_new:  # if we find our offer, turns out we didn't sell/buy :( #
                         self.offer_accepted = False
-                game.go_to_market()  # returns to market #
+                game.go_from_my_offers_to_market()  # returns to market #
 
             def check_offers_window():
                 """Checks my offers tab to see if previous offer is there.
@@ -103,7 +99,7 @@ class Strategies(Price_analysis):
                     self.order_set = False
                     self.successes.append(self.price_new)
                     print(f"Offer for {self.order_type} at price {self.price_new} closed!"
-                          f" Successes at {self.order_type}: {self.successes[-1]}")
+                          f" Successes at {self.order_type}: {len(self.successes)}")
                 return self
 
             if not self.found:
@@ -124,32 +120,38 @@ class Strategies(Price_analysis):
             """
             game.go_to_offers()
             game.cancel_offer(self.order_type)
-            game.go_to_market()
+            game.go_from_my_offers_to_market()
             self.failures.append(self.price_new)
             self.order_set = False
             self.is_order_stale = False
 
             return self
 
-        def trade_flow(self, pc):
-            """Sets trade flow so that orders are only created when necessary.
-            Also controls all the monitoring and closing.
-            """
+        def trade(self, pc):
             if pc.self_critique():
                 if not self.order_set:
                     if pc.calculate_total_profit() > cons.MIN_PROFIT_PERCENTAGE:
                         self.place_order(pc)
+                        print(f"Set {self.order_type} offer at price {self.price_new},"
+                              f" monitoring with strategy: {self.trade_method}")
                     else:
                         if self.market_timer >= 10 and self.market_timer % 10 == 0:
                             print("Bad market :(")
+            self.market_timer += 1
+            return self
 
-                elif self.order_set:  # if current offer is set, monitor it #
-                    self.monitor_orders()  # 3 true outcomes #
+        def monitor_trades(self, pc):
+            """Sets trade flow so that orders are only created when necessary.
+            Also controls all the monitoring and closing.
+            """
+            if self.order_set:  # if current offer is set, monitor it #
+                self.monitor_orders()  # 3 true outcomes #
 
                 if self.is_order_stale:  # if staleness counter is above threshold, cancel order and eat the loss #
                     self.cancel_specific_offer()
-                    print(f"Offer for {saelf.order_type} at price {self.price_new} stale, canceling"
+                    print(f"Offer for {self.order_type} at price {self.price_new} stale, canceling"
                           f" Failures at {self.order_type} {self.failures[-1]}")
+
             self.market_timer += 1
             return self
 

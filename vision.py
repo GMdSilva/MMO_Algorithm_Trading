@@ -10,13 +10,11 @@ import cons
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-
 def capture_text(coords):
     x, y, width, height = (cons.COORDS[coords][0],
                            cons.COORDS[coords][1],
                            cons.COORDS[coords][2],
                            cons.COORDS[coords][3],)
-    game.bye_confirmation_box()
     im = pyautogui.screenshot(region=(x, y, width, height))
     im = cv2.cvtColor(np.array(im), cv2.COLOR_BGR2GRAY)
     im = imutils.resize(im, width=200)
@@ -28,8 +26,20 @@ def capture_text(coords):
     return lines
 
 def read_resources(resource):
-    game.bye_confirmation_box()
-    lines = capture_text(resource)
-    lines = ''.join(filter(str.isdigit, lines[0]))
-    lines = int(lines)
+    str_arr = capture_text(resource)
+    lines = utils.sanitize_numbers(str_arr)
+    try:
+        lines = int(lines[0])
+    except:
+        print('Resource is not a int')
+        lines = utils.get_resource_checks(resource)
+        return lines
     return lines
+
+def check_if_image_on_screen(image_path):
+    image_found = False
+    image = pyautogui.locateOnScreen(image_path)
+    # Check the boolean variable before checking for the image:
+    if pyautogui.locateOnScreen(image_path, region=image, confidence=.9) is not None:
+        image_found = True
+    return image_found

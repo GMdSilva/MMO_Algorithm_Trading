@@ -8,15 +8,18 @@ from get_dataset import Get_dataset
 
 class Price_analysis(Get_dataset):
     def __init__(self, gd, order_type):
-        self.counter = gd.counter
-        self.current_price = gd.values[0]
-        self.second_price = gd.values[1]
-        self.previous_price = gd.first_value_history[gd.counter - 1]
-        self.prices = np.array(gd.values)
-        self.prices_mean = self.prices[1:2].mean()
-        self.current_price_bid = gd.values_down[0]
-        self.current_price_ask = gd.values_up[0]
         self.order_type = order_type
+        self.counter = gd.counter
+        self.current_price = gd.values[order_type][0]
+        self.second_price = gd.values[order_type][1]
+        if gd.counter > 0:
+            self.previous_price = gd.first_value_history[order_type][gd.counter - 1]
+        else:
+            self.previous_price = gd.first_value_history[order_type][gd.counter]
+        self.prices = np.array(gd.values[order_type])
+        self.prices_mean = self.prices[1:4].mean()
+        self.current_price_bid = gd.first_value_history['bid'][-1]
+        self.current_price_ask = gd.first_value_history['ask'][-1]
 
     def self_critique(self):
         price_validity = True
@@ -54,8 +57,8 @@ class Price_analysis(Get_dataset):
         spread = self.calculate_spread()
         fee = self.calculate_fee()
         profit = ((spread - fee) / (fee)) * 100
-        print(spread-fee)
-        print(profit)
+        print(f'Income is {spread-fee}')
+        print(f'Total profit is {profit}%')
         return profit
 
     def update_price(self, current_price, order_type, shadow_mode):
