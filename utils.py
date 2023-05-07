@@ -76,6 +76,7 @@ def find_index(arr):
         if cons.VAL in value:
             return i
 
+
 def get_offer_list(offer_type):
     offer_list = vs.capture_text('market_location')
     index = find_index(offer_list)
@@ -86,6 +87,7 @@ def get_offer_list(offer_type):
         offer_list = offer_list[:index]
         offer_list = sanitize_and_check_numbers(offer_list)
     return offer_list
+
 
 def get_price_data(offer_type):
     try:
@@ -141,6 +143,7 @@ def validate_entity(to_be_validated, types, coords):
         validation = False
     return validation
 
+
 def send_offer_checks(types, value, shadow_mode):
     print('oferc ')
     if vs.check_if_image_on_screen(cons.THE_DEVIl_PATH):
@@ -172,6 +175,7 @@ def send_offer_checks(types, value, shadow_mode):
         print('cant fix it')
         return -1
 
+
 def get_price_checks(offer_type):
     print('pricec c')
     if vs.check_if_image_on_screen(cons.THE_DEVIl_PATH):
@@ -190,6 +194,7 @@ def get_price_checks(offer_type):
     else:
         print('cant fix it')
         return -1
+
 
 def get_resource_checks(resource):
     print('resource chce')

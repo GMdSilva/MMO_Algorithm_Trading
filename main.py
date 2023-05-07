@@ -1,15 +1,17 @@
- # %%
+# %%
 import pyautogui
 import time
 import cons
 import game
 import plotting
 import utils
+import config as c
 from get_dataset import Get_dataset
 from price_analysis import Price_analysis
 from strategies import Strategies
 from performance import Performance
 import threading
+
 
 class ProgramClass(threading.Thread):
     def __init__(self, image_appeared_event, can_image_appear):
@@ -45,7 +47,7 @@ class ProgramClass(threading.Thread):
 
                 pc_ask = Price_analysis(gd_ask, 'ask')
 
-               # if not pf.pause_buying:
+                # if not pf.pause_buying:
                 if st_bid.order_set == False:
                     st_bid = st_bid.trade(pc_bid)
                     self.can_image_appear.set()
@@ -106,6 +108,7 @@ class MonitorClass(threading.Thread):
             except KeyboardInterrupt:
                 self.running = False
 
+
 if __name__ == '__main__':
     # Create the shared boolean
     image_appeared_event = threading.Event()
@@ -131,4 +134,4 @@ if __name__ == '__main__':
         program_thread.join()
         monitor_thread.join()
 
-#%%
+# %%

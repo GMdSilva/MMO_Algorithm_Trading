@@ -6,6 +6,7 @@ import game
 import utils
 from get_dataset import Get_dataset
 
+
 class Price_analysis(Get_dataset):
     def __init__(self, gd, order_type):
         self.order_type = order_type
@@ -42,7 +43,7 @@ class Price_analysis(Get_dataset):
         return price_validity
 
     def get_percent_diff(self):
-        percent = (self.previous_price/self.current_price) * 100
+        percent = (self.previous_price / self.current_price) * 100
         return percent
 
     def calculate_spread(self):
@@ -57,7 +58,7 @@ class Price_analysis(Get_dataset):
         spread = self.calculate_spread()
         fee = self.calculate_fee()
         profit = ((spread - fee) / (fee)) * 100
-        print(f'Income is {spread-fee}')
+        print(f'Income is {spread - fee}')
         print(f'Total profit is {profit}%')
         return profit
 

@@ -6,6 +6,7 @@ import utils
 import vision as vs
 from price_analysis import Price_analysis
 
+
 class Strategies(Price_analysis):
     def __init__(self, pc, order_type, method):
         self.arb = self.Arbitrage(pc, order_type, method)
@@ -174,4 +175,3 @@ class Strategies(Price_analysis):
     def trade_opportunism(self, pc):
         opp = self.Oportunism()
         return opp
-

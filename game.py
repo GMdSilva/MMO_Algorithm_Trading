@@ -2,10 +2,13 @@ import time
 import cons
 import utils
 
+
 def click_item():
+    if image_can_appear 
     time.sleep(0.1)
     utils.click(cons.COORDS['item_query'][0], cons.COORDS['item_query'][1])
     time.sleep(0.1)
+
 
 def click_boxes():
     time.sleep(0.1)
@@ -14,37 +17,46 @@ def click_boxes():
     utils.click(cons.COORDS['item_query'][0], cons.COORDS['item_query'][1])
     time.sleep(0.1)
 
+
 def close_market():
     time.sleep(0.1)
     utils.click(cons.COORDS['close_market'][0], cons.COORDS['close_market'][1])
+
 
 def open_market():
     time.sleep(0.1)
     utils.right_click(cons.COORDS['open_market'][0], cons.COORDS['open_market'][1])
 
+
 def click_price_text_box():
     time.sleep(0.1)
     utils.click(cons.COORDS['text_box'][0], cons.COORDS['text_box'][1])
+
 
 def click_create_offer():
     time.sleep(0.1)
     utils.click(cons.COORDS['create_offer'][0], cons.COORDS['create_offer'][1])
 
+
 def go_to_offers():
     time.sleep(0.1)
     utils.click(cons.COORDS['my_offers'][0], cons.COORDS['my_offers'][1])
+
 
 def bye_confirmation_box():
     time.sleep(0.1)
     utils.send_key('enter')
 
+
 def go_from_my_offers_to_market():
     time.sleep(0.1)
     utils.click(cons.COORDS['go_to_market'][0], cons.COORDS['go_to_market'][1])
 
+
 def anon_order():
     time.sleep(0.1)
     utils.click(cons.COORDS['anon_box'][0], cons.COORDS['anon_box'][1])
+
 
 def send_gold(new_prices):
     for number in str(new_prices):
@@ -52,11 +64,13 @@ def send_gold(new_prices):
         utils.send_key(number)
     click_item()
 
+
 def send_item_name_and_validate():
     for i in range(len(cons.COORDS['key_coins'])):
         time.sleep(0.1)
         utils.send_key(cons.COORDS['key_coins'][i])
     # TODO REPLACE THIS #
+
 
 def cancel_offer(order_type):
     if order_type == 'ask':
@@ -68,16 +82,19 @@ def cancel_offer(order_type):
         time.sleep(0.1)
         utils.click(cons.COORDS['my_offers_bid_cancel'][0], cons.COORDS['my_offers_bid_cancel'][1])
 
+
 ############ COMPLEX FUNCTIONS ##########################
 
 def go_to_market_and_search():
     go_from_my_offers_to_market()
     send_item_name_and_validate()
 
+
 def timeout_prevention():
     close_market()
     open_market()
     send_item_name_and_validate()
+
 
 def create_order(new_prices, types, shadow_mode):
     ## Clicks sell or buy ##

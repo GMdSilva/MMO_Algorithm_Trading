@@ -24,7 +24,6 @@ OPERATIONS = 2
 BATCH = 25
 PLACEHOLDER = 0
 
-
 if PLATFORM == 'desktop':
     FIGPATH = r'C:\Users\Gabriel\Dropbox\tibia_market_bot\tibia_market.png'
     AUDIO = r'C:\Users\Gabriel\Dropbox\tibia_market_bot\brasil.mp3'
@@ -110,4 +109,4 @@ ITEMS_DICT = {
     1: 'spear'
 }
 
-#%%
+# %%

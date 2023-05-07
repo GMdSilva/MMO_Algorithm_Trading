@@ -7,18 +7,18 @@ import vision as vs
 
 
 class Get_dataset:
-    def __init__(self, order_type,counter):
+    def __init__(self, order_type, counter):
         self.sold = 0
         self.added = 0
         self.dict = cons.DF_PRICES_COLS
         self.arr = 0
         self.values = {
-            'bid' : utils.get_price_data('bid'),
-            'ask' : utils.get_price_data('ask'),
+            'bid': utils.get_price_data('bid'),
+            'ask': utils.get_price_data('ask'),
         }
         self.first_value_history = {
-            'bid' : [utils.get_price_data('bid')[0]],
-            'ask' : [utils.get_price_data('ask')[0]],
+            'bid': [utils.get_price_data('bid')[0]],
+            'ask': [utils.get_price_data('ask')[0]],
         }
         self.counter = counter
         self.df_prices = utils.load_dataset()
@@ -42,7 +42,7 @@ class Get_dataset:
     def update_dict(self):
         dt, iso_str = utils.get_date()
         self.dict['Price'] = self.values[self.order_type][0]
-        self.dict['Time'] = self.counter+1
+        self.dict['Time'] = self.counter + 1
         self.dict['Sold'] = self.sold
         self.dict['Added'] = self.added
         self.dict['Item'] = cons.ITEMS_DICT[cons.ITEMS[cons.ITEM]]
@@ -70,7 +70,3 @@ class Get_dataset:
         self.update_and_save()
 
         return self
-
-
-
-

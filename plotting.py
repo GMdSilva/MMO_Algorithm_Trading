@@ -46,6 +46,7 @@ def get_plot_data(df, price_type, weekdays, window):
         'roll_volume': roll_volume
     }
 
+
 def make_plots():
     price_data_up = get_plot_data(cons.DATASET, 'Up', cons.WEEKDAYS, cons.WINDOW)
     price_data_down = get_plot_data(cons.DATASET, 'Down', cons.WEEKDAYS, cons.WINDOW)
@@ -60,9 +61,9 @@ def make_plots():
         7: price_data_down['prices_total'],
         8: price_data_down['prices_today'],
         9: price_data_down['roll_prices'],
-        10:price_data_down['volume_added_today'],
-        11:price_data_down['volume_sold_today'],
-        12:price_data_down['roll_volume'],
+        10: price_data_down['volume_added_today'],
+        11: price_data_down['volume_sold_today'],
+        12: price_data_down['roll_volume'],
     }
 
     fig = plt.figure(figsize=(12.48, 10.8), dpi=100)
@@ -78,7 +79,7 @@ def make_plots():
 
     for i in range(1, 13):
         ax = fig.add_subplot(4, 3, i)
-        ax.set_title(titles[i-1])
+        ax.set_title(titles[i - 1])
         lines, = ax.plot(data_to_be_plotted[i], color=line_colors[(i - 1) % 6])
 
     time.sleep(0.1)

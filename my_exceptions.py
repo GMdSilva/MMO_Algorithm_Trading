@@ -3,26 +3,34 @@ import game
 import vision as vs
 import utils
 
+
 class MarketClosedException(Exception):
     pass
+
 
 class BoxOpenException(Exception):
     pass
 
+
 class ShouldntBeInMyOffersException(Exception):
     pass
+
 
 class TypoException(Exception):
     pass
 
+
 class WeirdExceptionSearchBox1(Exception):
     pass
+
 
 class WeirdExceptionSearchBox2(Exception):
     pass
 
+
 class CantFindItemBox(Exception):
     pass
+
 
 class CantReadNumberException(Exception):
     def __init__(self, variable_name):
@@ -30,6 +38,7 @@ class CantReadNumberException(Exception):
 
     def __str__(self):
         return f"{self.variable_name} should be an integer."
+
 
 class CantReadNumberException(Exception):
     pass

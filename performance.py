@@ -61,7 +61,7 @@ class Performance:
         self.calculates_sale_offset()
         if not self.checked_performance:
             if self.success_diff > 2:
-                print(f'We are buying more than selling, slow down the buying!' )
+                print(f'We are buying more than selling, slow down the buying!')
                 self.checked_performance = True
                 self.pause_buying = True
             elif self.success_diff < -2:
@@ -109,7 +109,6 @@ class Performance:
         #     if self.new_value == True:
         #         self.calculate_loss()
         #     self.outcome = self.total_profit + self.total_loss
-
 
 # def calculate_performance(self, current_resource, starting_resource):
 #     perf_resource = current_resource - starting_resource

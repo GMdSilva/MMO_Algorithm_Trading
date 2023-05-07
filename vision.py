@@ -10,6 +10,7 @@ import cons
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
+
 def capture_text(coords):
     x, y, width, height = (cons.COORDS[coords][0],
                            cons.COORDS[coords][1],
@@ -25,6 +26,7 @@ def capture_text(coords):
     lines = data.split('\n')
     return lines
 
+
 def read_resources(resource):
     str_arr = capture_text(resource)
     lines = utils.sanitize_numbers(str_arr)
@@ -35,6 +37,7 @@ def read_resources(resource):
         lines = utils.get_resource_checks(resource)
         return lines
     return lines
+
 
 def check_if_image_on_screen(image_path):
     image_found = False
