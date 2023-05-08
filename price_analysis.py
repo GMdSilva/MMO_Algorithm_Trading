@@ -1,9 +1,5 @@
 import numpy as np
-import random
-import time
 import cons
-import game
-import utils
 from get_dataset import Get_dataset
 
 
@@ -16,7 +12,7 @@ class Price_analysis(Get_dataset):
         if gd.counter > 0:
             self.previous_price = gd.first_value_history[order_type][gd.counter - 1]
         else:
-            self.previous_price = gd.first_value_history[order_type][gd.counter]
+            self.previous_price = gd.first_value_history[order_type][0]
         self.prices = np.array(gd.values[order_type])
         self.prices_mean = self.prices[1:4].mean()
         self.current_price_bid = gd.first_value_history['bid'][-1]
@@ -57,9 +53,12 @@ class Price_analysis(Get_dataset):
     def calculate_total_profit(self):
         spread = self.calculate_spread()
         fee = self.calculate_fee()
-        profit = ((spread - fee) / (fee)) * 100
-        print(f'Income is {spread - fee}')
-        print(f'Total profit is {profit}%')
+        profit = ((spread - fee) / fee) * 100
+        if profit > cons.MIN_PROFIT_PERCENTAGE:
+            # print(f'Income is {spread - fee}')
+            # print(f'Total profit is {profit}%')
+            self.market_change = False
+            self.change_tracker = False
         return profit
 
     def update_price(self, current_price, order_type, shadow_mode):

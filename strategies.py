@@ -1,5 +1,5 @@
 from playsound import playsound
-
+import run_control
 import cons
 import game
 import utils
@@ -15,14 +15,15 @@ class Strategies(Price_analysis):
     class Arbitrage(Price_analysis):
         def __init__(self, pc, order_type, method):
             self.offer_list = 0  ## FIX THIS ##
-            self.order_set = False
+            self.order_set = run_control.check_previous(order_type)['order_set']
             self.index = False
             self.found = False
             self.offer_accepted = False
+            self.market_bad = False
             self.index = 0
-            self.price_new = 0
-            self.successes = []
-            self.failures = []
+            self.price_new = run_control.check_previous(order_type)['price']
+            self.successes = run_control.check_previous(order_type)['successes']
+            self.failures = run_control.check_previous(order_type)['failures']
             self.staleness_counter = 0
             self.is_order_stale = False
             self.order_type = order_type
@@ -75,14 +76,14 @@ class Strategies(Price_analysis):
                 """Does the actual checking.
                 Only checks in your "offers" tab, we use the Vision module for the market tab.
                 """
-                game.go_to_offers()  # goes to my offers list #
-                my_offers = vs.capture_text('offers')  # captures prices #
+                game.run_action_safely(game.go_to_offers())  # goes to my offers list #
+                my_offers = game.run_action_safely(lambda: vs.capture_text('offers'))  # captures prices #
                 self.offer_accepted = True  # ugly, but gets the job done #
                 my_offers = utils.sanitize_and_check_numbers(my_offers)
                 for offer in my_offers:  # check my offers line by line #
                     if offer == self.price_new:  # if we find our offer, turns out we didn't sell/buy :( #
                         self.offer_accepted = False
-                game.go_from_my_offers_to_market()  # returns to market #
+                game.run_action_safely(lambda: game.go_from_my_offers_to_market())  # returns to market #
 
             def check_offers_window():
                 """Checks my offers tab to see if previous offer is there.
@@ -119,9 +120,9 @@ class Strategies(Price_analysis):
         def cancel_specific_offer(self):
             """Cancel stale offers and updates checks.
             """
-            game.go_to_offers()
+            game.run_action_safely(lambda: game.go_to_offers())
             game.cancel_offer(self.order_type)
-            game.go_from_my_offers_to_market()
+            game.run_action_safely(lambda: game.go_from_my_offers_to_market())
             self.failures.append(self.price_new)
             self.order_set = False
             self.is_order_stale = False
@@ -132,12 +133,16 @@ class Strategies(Price_analysis):
             if pc.self_critique():
                 if not self.order_set:
                     if pc.calculate_total_profit() > cons.MIN_PROFIT_PERCENTAGE:
+                        if self.market_bad:
+                            self.market_bad = False
+                            print(f"Market is good for arbitrage, profit/trade: {pc.calculate_total_profit()}")
                         self.place_order(pc)
                         print(f"Set {self.order_type} offer at price {self.price_new},"
                               f" monitoring with strategy: {self.trade_method}")
                     else:
-                        if self.market_timer >= 10 and self.market_timer % 10 == 0:
-                            print("Bad market :(")
+                        if not self.market_bad:
+                            self.market_bad = True
+                            print(f"Market is not good for arbitrage, profit/trade: {pc.calculate_total_profit()}")
             self.market_timer += 1
             return self
 
@@ -160,18 +165,16 @@ class Strategies(Price_analysis):
         def __init__(self):
             self.played_sound = False
 
-        def seek_opportunity(self, pc):
-            if pc.self_critique():
-                percent_up, percent_down = pc.get_percent_diff()
-                if percent_up >= cons.THRESH_UP and self.played_sound is False:
-                    playsound(cons.AUDIO)
-                    self.played_sound = True
-                if percent_down <= cons.THRESH_DOWN and self.played_sound is False:
-                    playsound(cons.AUDIO)
-                    self.played_sound = True
-                if pc.counter % 50 == 0:
-                    self.played_sound = False
-
-    def trade_opportunism(self, pc):
-        opp = self.Oportunism()
-        return opp
+def seek_opportunity(pc, order_type):
+    played_sound = False
+    percent = pc.get_percent_diff()
+    if order_type == 'bid' and percent <= cons.THRESH_DOWN and played_sound is False:
+        print(percent)
+        playsound(cons.AUDIO)
+        played_sound = False
+    if order_type == 'ask' and percent >= cons.THRESH_UP and played_sound is False:
+        print(percent)
+        playsound(cons.AUDIO)
+        played_sound = False
+    # if pc.counter %  == 0:
+    #     self.played_sound = False

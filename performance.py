@@ -1,5 +1,5 @@
 import vision as vs
-import cons
+import game
 
 
 class Performance:
@@ -33,14 +33,14 @@ class Performance:
 
     def update_resources(self):
         if self.cycles == 0:
-            self.starting_gold = vs.read_resources('gold_box')
+            self.starting_gold = game.run_action_safely(lambda: vs.read_resources('gold_box'))
             print(f'Starting gold is: {self.starting_gold}')
-            self.starting_coin = vs.read_resources('coin_box')
+            self.starting_coin = game.run_action_safely(lambda: vs.read_resources('coin_box'))
             print(f'Starting coin is {self.starting_coin}')
             self.cycles += 1
         else:
-            self.current_gold = vs.read_resources('gold_box')
-            self.current_coin = vs.read_resources('coin_box')
+            self.current_gold = game.run_action_safely(lambda: vs.read_resources('gold_box'))
+            self.current_coin = game.run_action_safely(lambda: vs.read_resources('coin_box'))
             self.cycles += 1
         return self
 

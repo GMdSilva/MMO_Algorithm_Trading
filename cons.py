@@ -2,7 +2,7 @@ PLATFORM = 'desktop'
 AUDIO = r'C:\Users\gabri\Dropbox\tibia_market_bot\brasil.mp3'
 VAL = 'Price'
 DATASET = 'prices.csv'
-THE_DEVIl_PATH = 'the_devil.jpg'
+THE_DEVIL_PATH = 'the_devil.jpg'
 MARKET_PATH = 'market_open.JPG'
 OFFERS_PATH = 'offers_open.JPG'
 ITEMS_PATH = 'market_arae.JPG'
@@ -12,10 +12,11 @@ BUY_PATH = 'buy.jpg'
 SELL_PATH = 'sell.jpg'
 DP_PATH = 'depot.JPG'
 ITEMS = [0, 1]
+TRANSACTIONS = ['bid','ask']
 ITEM = 0
 WINDOW = 3
-THRESH_UP = 97
-THRESH_DOWN = 103
+THRESH_UP = 105
+THRESH_DOWN = 95
 MIN_VAL = 10000
 MAX_VAL = 30000
 BUY_FEE = 0.02  # 2% fee per transaction
@@ -31,6 +32,7 @@ if PLATFORM == 'desktop':
         'market_location': (1305, 524, 58, 400),
         'item_swap': (945, 697),
         'item_query': (945, 739),
+        'x_button': (1070,915),
         # 'item_swap': (945, 807),
         # 'item_query': (945, 840),
         'close_market': (1623, 959),

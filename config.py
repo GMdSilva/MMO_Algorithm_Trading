@@ -1,1 +1,1 @@
-img_can_appear = False
+image_can_appear = False

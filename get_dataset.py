@@ -1,13 +1,10 @@
 import pandas as pd
-from datetime import datetime
-import typing
 import cons
 import utils
-import vision as vs
-
 
 class Get_dataset:
-    def __init__(self, order_type, counter):
+    def __init__(self, order_type):
+        self.counter = 0
         self.sold = 0
         self.added = 0
         self.dict = cons.DF_PRICES_COLS
@@ -20,29 +17,31 @@ class Get_dataset:
             'bid': [utils.get_price_data('bid')[0]],
             'ask': [utils.get_price_data('ask')[0]],
         }
-        self.counter = counter
-        self.df_prices = utils.load_dataset()
+        self.df_prices = utils.load_dataset(order_type)
         self.order_type = order_type
         self.transaction = None
 
     def update_counters(self):
         self.transaction = None
         if self.counter == 0:
+            self.counter += 1
             self.transaction = 'Start'
         else:
             if self.values[self.order_type][0] != self.first_value_history[self.order_type][self.counter - 1]:
                 if self.first_value_history[self.order_type][self.counter - 1] not in self.values[self.order_type]:
                     self.sold += 1
+                    self.counter += 1
                     self.transaction = 'Closed'
                 else:
                     self.added += 1
+                    self.counter += 1
                     self.transaction = 'Opened'
         return self
 
-    def update_dict(self):
+    def update_dict(self, while_counter):
         dt, iso_str = utils.get_date()
         self.dict['Price'] = self.values[self.order_type][0]
-        self.dict['Time'] = self.counter + 1
+        self.dict['Time'] = while_counter
         self.dict['Sold'] = self.sold
         self.dict['Added'] = self.added
         self.dict['Item'] = cons.ITEMS_DICT[cons.ITEMS[cons.ITEM]]
@@ -55,18 +54,17 @@ class Get_dataset:
         self.df_prices = self.df_prices.append(df_temp, ignore_index=True)
         return self
 
-    def update_and_save(self):
+    def update_and_save(self, while_counter):
         self.update_counters()
         if self.transaction is not None:
-            self.update_dict()
-            self.df_prices.to_csv('prices.csv')
+            self.update_dict(while_counter)
+            self.df_prices.to_csv('prices_'+self.order_type+'.csv')
         return self
 
-    def run(self, order_type, counter):
+    def run(self, order_type, while_counter):
         self.values[order_type] = utils.get_price_data(order_type)
         self.first_value_history[order_type].append(self.values[order_type][0])
-        self.counter = counter
+        self.first_value_history[order_type] = self.first_value_history[order_type][-2:]
         self.order_type = order_type
-        self.update_and_save()
-
+        self.update_and_save(while_counter)
         return self
