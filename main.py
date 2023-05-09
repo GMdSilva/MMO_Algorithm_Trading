@@ -3,6 +3,7 @@ import time
 import game
 import plotting
 import config as c
+import utils
 from get_dataset import Get_dataset
 from price_analysis import Price_analysis
 from strategies import Strategies
@@ -10,15 +11,14 @@ from strategies import seek_opportunity
 from performance import Performance
 import run_control
 
-
 def run():
     loop_counter = 0
     gd_bid = Get_dataset('bid')
     gd_ask = Get_dataset('ask')
     pc_bid = Price_analysis(gd_bid, 'bid')
     pc_ask = Price_analysis(gd_ask, 'ask')
-    st_bid = Strategies.Arbitrage(pc_bid, 'bid', 'simulation')
-    st_ask = Strategies.Arbitrage(pc_ask, 'ask', 'simulation')
+    st_bid = Strategies.Arbitrage(pc_bid, 'bid', 'wild')
+    st_ask = Strategies.Arbitrage(pc_ask, 'ask', 'wild')
     pf = Performance(st_bid, st_ask)
     pf = pf.calculate_profit(st_ask)
     pf = pf.update_performance_markers()
@@ -70,13 +70,15 @@ def run():
             'price': st_ask.price_new,
             'successes' : st_ask.successes,
             'failures' : st_ask.failures,
-            'order_set' : st_ask.order_set
+            'order_set' : st_ask.order_set,
+            'staleness_counter': st_ask.staleness_counter
         }
         offer_dict_bid = {
             'price': st_bid.price_new,
             'successes' : st_bid.successes,
             'failures' : st_bid.failures,
-            'order_set' : st_bid.order_set
+            'order_set' : st_bid.order_set,
+            'staleness_counter': st_bid.staleness_counter
         }
         run_control.dump_files('bid',offer_dict_bid)
         run_control.dump_files('ask', offer_dict_ask)

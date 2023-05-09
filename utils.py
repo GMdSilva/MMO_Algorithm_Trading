@@ -1,13 +1,8 @@
-import keyboard
-import numpy as np
+import game
 import pandas as pd
 import time
-import win32api
-import win32con
 from datetime import datetime
 import pickle
-import game
-import vision as vs
 import cons
 import config
 from win_interface import Windows_Interface
@@ -105,26 +100,20 @@ def load_dataset(order_type):
     return df_prices
 
 
-def find_index(arr):
-    for i, value in enumerate(arr):
-        if cons.VAL in value:
-            return i
+# def find_index(arr):
+#     for i, value in enumerate(arr):
+#         if cons.VAL in value:
+#             return i
 
 def send_enter():
     wi.send_enter()
     time.sleep(0.1)
 
 def get_offer_list(offer_type):
-    offer_list = game.run_action_safely(lambda: vs.capture_text('market_location'))
-    index = find_index(offer_list)
-    if offer_type == 'bid':
-        offer_list = offer_list[index + 1:]
-        offer_list = sanitize_and_check_numbers(offer_list)
-    elif offer_type == 'ask':
-        offer_list = offer_list[:index]
-        offer_list = sanitize_and_check_numbers(offer_list)
+    image = game.run_action_safely(lambda: vs.background_screenshot())
+    offer_list = vs.get_each_price(offer_type, image)
+    offer_list = sanitize_numbers(offer_list)
     return offer_list
-
 
 def get_price_data(offer_type):
     try:
@@ -167,6 +156,12 @@ def validate_order_type(types):
                 print("Order was set to bid when it should be ask, check code")
                 game.run_action_safely(lambda: click(cons.COORDS[types][0], cons.COORDS[types][1]))
                 #time.sleep(0.1)
+    if vs.check_if_image_on_screen('create.PNG', threshold=.9):
+        print('found')
+        return True
+    else:
+        print('not found')
+        return False
 
 
 def send_offer_checks(types, value, shadow_mode):

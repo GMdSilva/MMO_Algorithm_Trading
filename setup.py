@@ -240,8 +240,4 @@ def main():
     # st.click_coords.update(st.item_letters)
     print(st.click_coords)
 
-    file = open("config.txt", "wb")
-    pickle.dump(st.click_coords, file)
-    file.close()
-
 main()

@@ -10,3 +10,16 @@ image_can_appear = False
 char_name = 'tibia'
 coords = get_configs()
 
+def initialize():
+    for filename in ['bid_dump.txt', 'ask_dump.txt']:
+        dict = {
+            'order_set': False,
+            'price': 0,
+            'successes': [],
+            'failures': [],
+            'staleness_counter': 0
+        }
+
+        file = open(filename, "wb")
+        pickle.dump(dict, file)
+        file.close()

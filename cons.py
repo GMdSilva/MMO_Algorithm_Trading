@@ -23,7 +23,7 @@ THRESH_DOWN = 95
 MIN_VAL = 10000
 MAX_VAL = 30000
 BUY_FEE = 0.02  # 2% fee per transaction
-MIN_PROFIT_PERCENTAGE = -100  # minimum % profit required for trade to be worth it
+MIN_PROFIT_PERCENTAGE = 10  # minimum % profit required for trade to be worth it
 OPERATIONS = 2
 BATCH = 25
 PLACEHOLDER = 0
@@ -58,6 +58,12 @@ if PLATFORM == 'desktop':
     #     'coin_box': (1103, 948, 42, 18),
     #     'search_box': (961, 911, 37, 12),
     # }
+
+    MARKET_COORDS = {
+        'ask': [1303, 500, 59, 13],
+        'bid': [1303, 681, 59, 13]
+    }
+
 
 else:
     COORDS = {

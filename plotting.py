@@ -20,14 +20,14 @@ def get_plot_data(df, price_type, weekdays, window):
     roll_prices = prices['Price'].rolling(window).mean().fillna(method='bfill')
     roll_prices_today = prices_today['Price'].rolling(window).mean().fillna(method='bfill')
 
-    volume_added = prices['Added'].div(prices.Time, axis=0)
-    volume_sold = prices['Sold'].div(prices.Time, axis=0)
+    volume_added = prices['Added'].div(prices.Time + 1, axis=0)
+    volume_sold = prices['Sold'].div(prices.Time + 1, axis=0)
 
-    volume_added_today = prices_today['Added'].div(prices_today.Time, axis=0)
-    volume_sold_today = prices_today['Sold'].div(prices_today.Time, axis=0)
+    volume_added_today = prices_today['Added'].div(prices_today.Time + 1, axis=0)
+    volume_sold_today = prices_today['Sold'].div(prices_today.Time + 1, axis=0)
 
     total_volume = prices['Added'] + prices['Sold']
-    roll_volume = total_volume.div(prices.Time, axis=0)
+    roll_volume = total_volume.div(prices.Time + 1, axis=0)
     roll_volume = roll_volume.rolling(window).mean().fillna(method='bfill')
 
     return {

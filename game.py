@@ -1,11 +1,8 @@
 import time
-
 import pyautogui
-
 import cons
-import utils
 import config
-
+import utils
 
 def run_action_safely(fun):
     if not config.image_can_appear:
@@ -74,6 +71,9 @@ def send_gold(new_prices):
     #for number in str(new_prices):
     run_action_safely(lambda: utils.send_key(str(new_prices)))
 
+def check_if_enough_resources(offer_type):
+    # TODO
+    pass
 
 def send_item_name():
     run_action_safely(lambda: click_x())
@@ -115,19 +115,18 @@ def create_order(new_prices, types, shadow_mode):
     ## Fill in the price ##
     send_gold(new_prices)
     # anonymize it #
-    run_action_safely(lambda: anon_order())
     if not shadow_mode:
         try:
             if utils.validate_entity(new_prices, 'number', 'price_box'):
-                utils.validate_order_type(types)
-                run_action_safely(lambda: click_create_offer())
+                if utils.validate_order_type(types):
+                    run_action_safely(lambda: anon_order())
+                    run_action_safely(lambda: click_create_offer())
+                    run_action_safely(lambda: anon_order())
+                    return True
+                else:
+                    return False
             else:
                 utils.send_offer_checks(types, new_prices, shadow_mode)
         except BaseException:
             print('something went wrong')
-            ## TODO ##
-
-            ## utils.send_offer_checks(types, new_prices, shadow_mode)
-
-    run_action_safely(lambda: anon_order())
-    #time.sleep(0.1)
+            return False

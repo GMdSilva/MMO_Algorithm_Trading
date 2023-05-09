@@ -24,7 +24,7 @@ class Strategies(Price_analysis):
             self.price_new = run_control.check_previous(order_type)['price']
             self.successes = run_control.check_previous(order_type)['successes']
             self.failures = run_control.check_previous(order_type)['failures']
-            self.staleness_counter = 0
+            self.staleness_counter = run_control.check_previous(order_type)['staleness_counter']
             self.is_order_stale = False
             self.order_type = order_type
             self.market_timer = 0
@@ -32,7 +32,7 @@ class Strategies(Price_analysis):
             self.trade_method = method
             self.duplicate_checker = 0
             if self.trade_method == 'wild':
-                self.staleness_threshold = 0
+                self.staleness_threshold = 30
             if self.trade_method == 'simulation':
                 self.shadow_mode = True
             else:
@@ -47,8 +47,7 @@ class Strategies(Price_analysis):
             if self.order_type == 'ask':
                 self.price_new = pc.update_price(pc.current_price_ask,
                                                  self.order_type, self.shadow_mode)  # gets current price + 1 #
-            game.create_order(self.price_new, self.order_type, self.shadow_mode)
-            self.order_set = True  # order is set! (hopefully) #
+            self.order_set = game.create_order(self.price_new, self.order_type, self.shadow_mode)
             return self  # returns updated price + order status #
 
         def monitor_orders(self):
@@ -61,11 +60,12 @@ class Strategies(Price_analysis):
                 print('Welcome to the danger zone')
             self.found = False  # resets check condition #
             self.duplicate_checker = 0
-            self.offer_list = utils.get_offer_list(self.order_type)
+            self.offer_list = utils.get_price_data(self.order_type)
             for i, offer in enumerate(self.offer_list):  # loops over current top 4 offers in market #
                 if offer == self.price_new:  # if offer is within top 4, we're good #
                     self.duplicate_checker += 1
                     self.index = i
+                    self.staleness_counter += 1
                     if self.market_timer >= 5 and self.market_timer % 5 == 0:
                         print(f'{self.order_type} Offer is at index {self.index}!')
                     if self.index < 3:
@@ -106,7 +106,7 @@ class Strategies(Price_analysis):
 
             if not self.found:
                 if self.trade_method is 'wild' or self.trade_method is 'simulation':
-                    if self.index >= 3:
+                    if self.index >= 3 or self.staleness_counter > self.staleness_threshold:
                         self.is_order_stale = True
                         self.staleness_counter = 0
                     else:
@@ -137,8 +137,9 @@ class Strategies(Price_analysis):
                             self.market_bad = False
                             print(f"Market is good for arbitrage, profit/trade: {pc.calculate_total_profit()}")
                         self.place_order(pc)
-                        print(f"Set {self.order_type} offer at price {self.price_new},"
-                              f" monitoring with strategy: {self.trade_method}")
+                        if self.order_set:
+                            print(f"Set {self.order_type} offer at price {self.price_new},"
+                                  f" monitoring with strategy: {self.trade_method}")
                     else:
                         if not self.market_bad:
                             self.market_bad = True
