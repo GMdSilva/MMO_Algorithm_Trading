@@ -1,8 +1,10 @@
-PLATFORM = 'desktop'
-AUDIO = r'C:\Users\gabri\Dropbox\tibia_market_bot\brasil.mp3'
+import config
+
+PLATFORM = 'desktop' # TODO REMOVE THIS
+AUDIO = r'brasil.mp3'
 VAL = 'Price'
-DATASET = 'prices.csv'
-THE_DEVIL_PATH = 'the_devil.jpg'
+DATASET = 'prices.csv' # TODO SEE IF THIS IS USED ANYWHERE
+THE_DEVIL_PATH = 'the_devil.jpg' # TODO ADD FUNCTION FOR USER TO GET ALL OF THESE
 MARKET_PATH = 'market_open.JPG'
 OFFERS_PATH = 'offers_open.JPG'
 ITEMS_PATH = 'market_arae.JPG'
@@ -11,6 +13,7 @@ LOCKER_PATH = 'locker.JPG'
 BUY_PATH = 'buy.jpg'
 SELL_PATH = 'sell.jpg'
 DP_PATH = 'depot.JPG'
+
 ITEMS = [0, 1]
 TRANSACTIONS = ['bid','ask']
 ITEM = 0
@@ -20,45 +23,43 @@ THRESH_DOWN = 95
 MIN_VAL = 10000
 MAX_VAL = 30000
 BUY_FEE = 0.02  # 2% fee per transaction
-MIN_PROFIT_PERCENTAGE = 20  # minimum % profit required for trade to be worth it
+MIN_PROFIT_PERCENTAGE = -100  # minimum % profit required for trade to be worth it
 OPERATIONS = 2
 BATCH = 25
 PLACEHOLDER = 0
+FIGPATH = r'tibia_market.png'
 
 if PLATFORM == 'desktop':
-    FIGPATH = r'C:\Users\Gabriel\Dropbox\tibia_market_bot\tibia_market.png'
-    AUDIO = r'C:\Users\Gabriel\Dropbox\tibia_market_bot\brasil.mp3'
-    COORDS = {
-        'market_location': (1305, 524, 58, 400),
-        'item_swap': (945, 697),
-        'item_query': (945, 739),
-        'x_button': (1070,915),
-        # 'item_swap': (945, 807),
-        # 'item_query': (945, 840),
-        'close_market': (1623, 959),
-        'open_market': (2525, 502),
-        'key_coins': ['c', 'o', 'i', 'n'],
-        # 'key_coins': ['s', 'p', 'e', 'a', 'r']
-        'text_box': (1323, 889),
-        'create_offer': (1609, 917),
-        'ask': (1094, 853),
-        'bid': (1095, 870),
-        'my_offers': (1514, 958),
-        'go_to_market': (1603, 960),
-        'my_offers_ask_cancel': (1610, 479),
-        'my_offers_bid_cancel': (1610, 713),
-        'my_offers': (1517, 956),
-        'offers': (1267, 528, 50, 281),
-        'anon_box': (1506, 913),
-        'price_box': (1277, 882, 43, 13),
-        'gold_box': (959, 948, 79, 18),
-        'coin_box': (1103, 948, 42, 18),
-        'search_box': (961, 911, 37, 12),
-    }
+    COORDS = config.coords
+    # COORDS = {
+    #     'market_location': (1305, 500, 58, 300),
+    #     'item_swap': (945, 697),
+    #     'item_query': (945, 739),
+    #     'x_button': (1070,915),
+    #     # 'item_swap': (945, 807),
+    #     # 'item_query': (945, 840),
+    #     'close_market': (1623, 959),
+    #     'open_market': (2525, 502),
+    #     'key_coins': ['c', 'o', 'i', 'n'],
+    #     # 'key_coins': ['s', 'p', 'e', 'a', 'r']
+    #     'text_box': (1323, 889),
+    #     'create_offer': (1609, 917),
+    #     'ask': (1094, 853),
+    #     'bid': (1095, 870),
+    #     'my_offers': (1514, 958),
+    #     'go_to_market': (1603, 960),
+    #     'my_offers_ask_cancel': (1610, 479),
+    #     'my_offers_bid_cancel': (1610, 713),
+    #     'my_offers': (1517, 956),
+    #     'offers': (1267, 528, 50, 281),
+    #     'anon_box': (1506, 913),
+    #     'price_box': (1277, 882, 43, 13),
+    #     'gold_box': (959, 948, 79, 18),
+    #     'coin_box': (1103, 948, 42, 18),
+    #     'search_box': (961, 911, 37, 12),
+    # }
 
 else:
-    FIGPATH = r'tibia_market.png'
-    AUDIO = r'brasil.mp3'
     COORDS = {
         'market_location': (994, 288, 100, 367),
         'item_swap': (541, 562),
@@ -108,7 +109,12 @@ DF_PRICES_COLS = {
 
 ITEMS_DICT = {
     0: 'coin',
-    1: 'spear'
+    1: 'gold token'
+}
+
+ITEMS_DICT_NEW = {
+    'coin': 'coins.JPG',
+    'gold token': 'gold_token.JPG'
 }
 
 # %%

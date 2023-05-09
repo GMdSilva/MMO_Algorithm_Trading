@@ -10,6 +10,11 @@ import game
 import vision as vs
 import cons
 import config
+from win_interface import Windows_Interface
+from vision import Vision
+
+wi = Windows_Interface()
+vs = Vision()
 
 def open_dump_files(offer_type, offer_dict):
     file = open(offer_type+"_dump.txt", "wb")
@@ -23,33 +28,39 @@ def check_previous(offer_type):
     return d
 
 def click(x, y):
-    win32api.SetCursorPos((x, y))
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
-    time.sleep(np.random.uniform(0.1, 0.02))
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
-    time.sleep(np.random.uniform(0.1, 0.02))
+    wi.left_click((x,y))
+    time.sleep(0.1)
+    # win32api.SetCursorPos((x, y))
+    # win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
+    # time.sleep(np.random.uniform(0.1, 0.02))
+    # win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+    # time.sleep(np.random.uniform(0.1, 0.02))
 
 
 def right_click(x, y):
-    win32api.SetCursorPos((x, y))
-    win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, x, y, 0, 0)
-    time.sleep(np.random.uniform(0.1, 0.02))
-    win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, x, y, 0, 0)
+    wi.right_click((x,y))
+    time.sleep(0.1)
+    # win32api.SetCursorPos((x, y))
+    # win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, x, y, 0, 0)
+    # time.sleep(np.random.uniform(0.1, 0.02))
+    # win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, x, y, 0, 0)
 
 
 def send_key(key):
-    time.sleep(0.05)
-    keyboard.press_and_release(key)
+    wi.send_keys(key)
+    time.sleep(0.1)
+    #keyboard.press_and_release(key)
 
 
-def select_all():
-    time.sleep(0.05)
-    keyboard.press_and_release('ctrl+a')
+# def select_all():
+#     time.sleep(0.05)
+#     keyboard.press_and_release('ctrl+a')
 
 
 def delete():
-    time.sleep(0.05)
-    keyboard.press_and_release('backspace')
+    wi.delete()
+    time.sleep(0.1)
+    #keyboard.press_and_release('backspace')
 
 
 def sanitize_and_check_numbers(str_arr):
@@ -99,6 +110,9 @@ def find_index(arr):
         if cons.VAL in value:
             return i
 
+def send_enter():
+    wi.send_enter()
+    time.sleep(0.1)
 
 def get_offer_list(offer_type):
     offer_list = game.run_action_safely(lambda: vs.capture_text('market_location'))

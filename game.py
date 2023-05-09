@@ -3,7 +3,6 @@ import time
 import pyautogui
 
 import cons
-import game
 import utils
 import config
 
@@ -50,7 +49,7 @@ def go_to_offers():
     #time.sleep(0.1)
 
 def bye_confirmation_box():
-    utils.send_key('enter')
+    utils.send_enter()
     time.sleep(0.1)
 
 def go_from_my_offers_to_market():
@@ -70,16 +69,16 @@ def send_gold(new_prices):
         new_prices = int(new_prices)
     except ValueError:
         print('Price is not integer, recheck image capture')
-    run_action_safely(lambda: utils.select_all())
+   #run_action_safely(lambda: utils.select_all())
     run_action_safely(lambda: utils.delete())
-    for number in str(new_prices):
-        run_action_safely(lambda: utils.send_key(number))
+    #for number in str(new_prices):
+    run_action_safely(lambda: utils.send_key(str(new_prices)))
 
 
 def send_item_name():
     run_action_safely(lambda: click_x())
-    for i in range(len(cons.COORDS['key_coins'])):
-        run_action_safely(lambda: utils.send_key(cons.COORDS['key_coins'][i]))
+    #or i in range(len(cons.COORDS['key_coins'])):
+    run_action_safely(lambda: utils.send_key(cons.COORDS['key_coins']))
 
 
 def cancel_offer(order_type):
@@ -122,10 +121,8 @@ def create_order(new_prices, types, shadow_mode):
             if utils.validate_entity(new_prices, 'number', 'price_box'):
                 utils.validate_order_type(types)
                 run_action_safely(lambda: click_create_offer())
-                print('bbb')
             else:
                 utils.send_offer_checks(types, new_prices, shadow_mode)
-                print('aaaa')
         except BaseException:
             print('something went wrong')
             ## TODO ##

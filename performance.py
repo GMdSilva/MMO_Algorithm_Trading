@@ -1,6 +1,7 @@
-import vision as vs
+from vision import Vision
 import game
 
+vs = Vision()
 
 class Performance:
     def __init__(self, arb_bids, arb_asks):

@@ -2,7 +2,6 @@ import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
-from IPython.display import clear_output
 
 import cons
 
@@ -48,8 +47,9 @@ def get_plot_data(df, price_type, weekdays, window):
 
 
 def make_plots():
-    price_data_up = get_plot_data(cons.DATASET, 'Up', cons.WEEKDAYS, cons.WINDOW)
-    price_data_down = get_plot_data(cons.DATASET, 'Down', cons.WEEKDAYS, cons.WINDOW)
+
+    price_data_up = get_plot_data('prices_ask.csv', 'ask', cons.WEEKDAYS, cons.WINDOW)
+    price_data_down = get_plot_data('prices_bid.csv', 'bid', cons.WEEKDAYS, cons.WINDOW)
 
     data_to_be_plotted = {
         1: price_data_up['prices_total'],
@@ -80,7 +80,7 @@ def make_plots():
     for i in range(1, 13):
         ax = fig.add_subplot(4, 3, i)
         ax.set_title(titles[i - 1])
-        lines, = ax.plot(data_to_be_plotted[i], color=line_colors[(i - 1) % 6])
+        ax.plot(data_to_be_plotted[i], color=line_colors[(i - 1) % 6])
 
     time.sleep(0.1)
     plt.tight_layout()
