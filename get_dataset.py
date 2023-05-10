@@ -1,12 +1,13 @@
 import pandas as pd
 import cons
 import utils
+import run_control
 
 class Get_dataset:
     def __init__(self, order_type):
         self.counter = 0
-        self.sold = 0
-        self.added = 0
+        self.sold = run_control.check_previous(order_type)['closed']
+        self.added = run_control.check_previous(order_type)['opened']
         self.dict = cons.DF_PRICES_COLS
         self.arr = 0
         self.values = {
@@ -29,13 +30,17 @@ class Get_dataset:
         else:
             if self.values[self.order_type][0] != self.first_value_history[self.order_type][self.counter - 1]:
                 if self.first_value_history[self.order_type][self.counter - 1] not in self.values[self.order_type]:
+                    print(self.values[self.order_type][0], self.first_value_history[self.order_type][self.counter - 1])
                     self.sold += 1
                     self.counter += 1
                     self.transaction = 'Closed'
+                    print('Closed at ' + str(self.first_value_history[self.order_type][self.counter - 1]))
                 else:
+                    print(self.values[self.order_type][0], self.first_value_history[self.order_type][self.counter - 1])
                     self.added += 1
                     self.counter += 1
                     self.transaction = 'Opened'
+                    print('Opened at ' + str(self.first_value_history[self.order_type][self.counter - 1]))
         return self
 
     def update_dict(self, while_counter):

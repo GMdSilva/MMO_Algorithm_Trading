@@ -56,10 +56,10 @@ class Windows_Interface:
             if 'Tibia' in win32gui.GetWindowText(self.hwnd):
                 win32api.SendMessage(self.hwnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
                 win32api.SendMessage(self.hwnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)
+    @staticmethod
+    def background_screenshot():
 
-    def background_screenshot(self):
-
-        hwnd = self.hwnd
+        hwnd = Windows_Interface.get_handle(Windows_Interface)
 
         # Change the line below depending on whether you want the whole window
         # or just the client area.
@@ -96,7 +96,7 @@ class Windows_Interface:
         win32gui.ReleaseDC(hwnd, hwndDC)
 
         if result == 1:
-            #im.save("testa.png")
+            im.save("testa.png")
             im = np.array(im)
             im = im[:, :, ::-1].copy()
             return im

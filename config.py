@@ -7,7 +7,7 @@ def get_configs():
     return previous_results
 
 image_can_appear = False
-char_name = 'tibia'
+char_name = 'tibia - dorivall intermedlo'
 coords = get_configs()
 
 def initialize():
@@ -17,7 +17,10 @@ def initialize():
             'price': 0,
             'successes': [],
             'failures': [],
-            'staleness_counter': 0
+            'staleness_counter': 0,
+            'loop_counter': 0,
+            'opened': 0,
+            'closed': 0
         }
 
         file = open(filename, "wb")

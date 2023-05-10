@@ -1,14 +1,15 @@
 import time
-import pyautogui
 import cons
 import config
 import utils
+import vision as vs
 
 def run_action_safely(fun):
     if not config.image_can_appear:
         return fun()
     else:
-        if pyautogui.locateOnScreen(cons.THE_DEVIL_PATH, confidence=.9) is not None:
+        if vs.Vision.check_if_image_on_screen(cons.THE_DEVIL_PATH, threshold=0.9) is not None:
+            print(config.image_can_appear)
             print('Image found!')
             config.image_can_appear = False
             bye_confirmation_box()
@@ -124,8 +125,10 @@ def create_order(new_prices, types, shadow_mode):
                     run_action_safely(lambda: anon_order())
                     return True
                 else:
+                    print('cant validate money')
                     return False
             else:
+                print('cant validate prices')
                 utils.send_offer_checks(types, new_prices, shadow_mode)
         except BaseException:
             print('something went wrong')

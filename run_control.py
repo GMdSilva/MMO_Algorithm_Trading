@@ -10,10 +10,3 @@ def check_previous(offer_type):
         data = handle.read()
         previous_results = pickle.loads(data)
     return previous_results
-
-offer_dict = {
-    'price': 0,
-    'successes' : [],
-    'failures' : [],
-    'order_set' : False
-}

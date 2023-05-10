@@ -14,7 +14,7 @@ class Price_analysis(Get_dataset):
         else:
             self.previous_price = gd.first_value_history[order_type][0]
         self.prices = np.array(gd.values[order_type])
-        self.prices_mean = self.prices[1:4].mean()
+        self.prices_mean = self.prices[1:2].mean()
         self.current_price_bid = gd.first_value_history['bid'][-1]
         self.current_price_ask = gd.first_value_history['ask'][-1]
 

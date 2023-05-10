@@ -118,7 +118,7 @@ def get_offer_list(offer_type):
 def get_price_data(offer_type):
     try:
         offer_list = get_offer_list(offer_type)
-        if len(offer_list) < 5:
+        if len(offer_list) < 6:
             print('Something is wrong with prices, they exist but are too few')
             offer_list = get_price_checks(offer_type)
             return offer_list
