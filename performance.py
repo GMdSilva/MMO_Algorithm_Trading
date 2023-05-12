@@ -53,34 +53,39 @@ class Performance:
         self.combined_profit = self.gold_profit + self.coin_profit
         return self
 
-    def calculates_sale_offset(self):
+    def calculates_sale_offset(self, arb_bids, arb_asks):
+        self.bids_successes = arb_bids
+        self.asks_successes = arb_asks
         self.success_diff = len(self.bids_successes) - len(self.asks_successes)
         self.failure_diff = len(self.bids_successes) - len(self.asks_successes)
         return self
 
-    def update_performance_markers(self):
-        self.calculates_sale_offset()
-        if not self.checked_performance:
-            if self.success_diff > 2:
+    def update_performance_markers(self, arb_bids, arb_asks):
+        self.calculates_sale_offset(arb_bids, arb_asks)
+        if self.success_diff > 2:
+            if not self.checked_performance:
                 print(f'We are buying more than selling, slow down the buying!')
-                self.checked_performance = True
-                self.pause_buying = True
-            elif self.success_diff < -2:
+            self.checked_performance = True
+            self.pause_buying = True
+        elif self.success_diff < -2:
+            if not self.checked_performance:
                 print(f'We are selling more than we are buying, slow down the selling! {self.success_diff}')
-                self.checked_performance = True
-                self.pause_selling = True
-            elif self.failure_diff > 2:
+            self.checked_performance = True
+            self.pause_selling = True
+        elif self.failure_diff > 2:
+            if not self.checked_performance:
                 print(f'We are cancelling a lot of sales, slow down the selling!')
-                self.checked_performance = True
-                self.pause_selling = True
-            elif self.failure_diff < -2:
+            self.checked_performance = True
+            self.pause_selling = True
+        elif self.failure_diff < -2:
+            if not self.checked_performance:
                 print(f'We are cancelling a lot of bids, slow down the buying!')
-                self.checked_performance = True
-                self.pause_buying = True
-            else:
-                self.pause_selling = False
-                self.pause_buying = False
-                self.checked_performance = False
+            self.checked_performance = True
+            self.pause_buying = True
+        else:
+            self.pause_selling = False
+            self.pause_buying = False
+            self.checked_performance = False
         return self
 
         # def calculate_income(self, type):

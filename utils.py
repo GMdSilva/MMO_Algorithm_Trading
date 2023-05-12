@@ -2,7 +2,6 @@ import game
 import pandas as pd
 import time
 from datetime import datetime
-import pickle
 import cons
 import config
 from win_interface import Windows_Interface
@@ -11,16 +10,6 @@ from vision import Vision
 wi = Windows_Interface()
 vs = Vision()
 
-def open_dump_files(offer_type, offer_dict):
-    file = open(offer_type+"_dump.txt", "wb")
-    pickle.dump(offer_dict, file)
-    file.close()
-
-def check_previous(offer_type):
-    with open(offer_type+'_dump.txt', 'rb') as handle:
-        data = handle.read()
-        d = pickle.loads(data)
-    return d
 
 def click(x, y):
     wi.left_click((x,y))
@@ -66,7 +55,7 @@ def sanitize_and_check_numbers(str_arr):
         # Convert to integer, skip iteration if not a valid integer within the range
         try:
             num = int(s)
-            if cons.MIN_VAL >= num or num >= cons.MAX_VAL:
+            if cons.MIN_VAL >= num or num >= cons.MAX_VAL: # todo implement per-item limits
                 raise ValueError
             else:
                 nums.append(num)
@@ -88,6 +77,13 @@ def sanitize_numbers(str_arr):
             continue
     return nums
 
+def sanitize_one_number(str_arr):
+    # Remove non-numeric characters
+    str_arr = ''.join(filter(str.isdigit, str_arr))
+    # Convert to integer, skip iteration if not a valid integer within the range
+    nums = int(str_arr)
+    return nums
+
 
 def get_date():
     dt = datetime.now()
@@ -96,7 +92,7 @@ def get_date():
 
 
 def load_dataset(order_type):
-    df_prices = pd.read_csv('prices_'+order_type+'.csv', index_col=0)
+    df_prices = pd.read_csv('prices_'+order_type+'.csv', index_col=0) # TODO IMPLEMENT PER ITEM DBS
     return df_prices
 
 
@@ -118,7 +114,7 @@ def get_offer_list(offer_type):
 def get_price_data(offer_type):
     try:
         offer_list = get_offer_list(offer_type)
-        if len(offer_list) < 6:
+        if len(offer_list) < 6: # todo this will depend on the item
             print('Something is wrong with prices, they exist but are too few')
             offer_list = get_price_checks(offer_type)
             return offer_list
@@ -131,21 +127,21 @@ def get_price_data(offer_type):
    #return offer_list
 
 def validate_entity(to_be_validated, types, coords):
-    reference = game.run_action_safely(lambda: vs.capture_text(coords))
+    reference = game.run_action_safely(lambda: vs.capture_text(cons.COORDS[coords], update=True))
     if types == 'number':
-        reference = sanitize_numbers(reference)
+        reference = sanitize_one_number(reference)
         try:
-            num = int(reference[0])
+            num = int(reference)
         except ValueError:
             print('Reference is not a int')
-    if to_be_validated == reference[0]:
+    if to_be_validated == reference:
         validation = True
     else:
         validation = False
     return validation
 
 def validate_order_type(types):
-    if game.run_action_safely(lambda: vs.check_if_image_on_screen(cons.ITEM_PATH)):
+    if game.run_action_safely(lambda: vs.check_if_image_on_screen(cons.ITEM_PATH)): # todo implement one for each items
         if types == 'bid':
             if not game.run_action_safely(lambda: vs.check_if_image_on_screen(cons.BUY_PATH)):
                 print("Order was set to ask when it should be bid, check code")
@@ -157,14 +153,14 @@ def validate_order_type(types):
                 game.run_action_safely(lambda: click(cons.COORDS[types][0], cons.COORDS[types][1]))
                 #time.sleep(0.1)
     if vs.check_if_image_on_screen('create.PNG', threshold=.9):
-        print('found')
+        #rint('found')
         return True
     else:
-        print('not found')
+       #print('not found')
         return False
 
 
-def send_offer_checks(types, value, shadow_mode):
+def send_offer_checks(value, types, shadow_mode):
     print('Something triggered checking offers')
     if vs.check_if_image_on_screen(cons.THE_DEVIL_PATH):
         game.bye_confirmation_box()
@@ -173,23 +169,23 @@ def send_offer_checks(types, value, shadow_mode):
         game.run_action_safely(lambda: game.go_from_my_offers_to_market())
     game.run_action_safely(lambda: game.click_item())
     game.timeout_prevention()
-    if game.run_action_safely(lambda: vs.check_if_image_on_screen(cons.ITEM_PATH)):
+    if game.run_action_safely(lambda: vs.check_if_image_on_screen(cons.ITEM_PATH)): # todo implement one for each items
         if types == 'bid':
             if game.run_action_safely(lambda: vs.check_if_image_on_screen(cons.BUY_PATH)):
-                game.create_order(types, value, shadow_mode)
+                game.create_order(value, types, shadow_mode)
                 print('creating order bid')
             else:
                 game.run_action_safely(lambda: click(cons.COORDS[types][0], cons.COORDS[types][1]))
                 #time.sleep(0.1)
-                game.create_order(types, value, shadow_mode)
+                game.create_order(value, types, shadow_mode)
         elif types == 'ask':
             if game.run_action_safely(lambda: vs.check_if_image_on_screen(cons.SELL_PATH)):
-                game.run_action_safely(lambda: game.create_order(types, value, shadow_mode))
+                game.create_order(value, types, shadow_mode)
                 print('creating order ask')
             else:
                 game.run_action_safely(lambda: click(cons.COORDS[types][0], cons.COORDS[types][1]))
                 #time.sleep(0.1)
-                game.create_order(types, value, shadow_mode)
+                game.create_order(value, types, shadow_mode)
                 print('creating order')
 
     else:
@@ -218,10 +214,8 @@ def get_price_checks(offer_type):
 def get_resource_checks(resource):
     print('Something triggered checking resources')
     if vs.check_if_image_on_screen(cons.THE_DEVIL_PATH):
-        print('bb')
         game.bye_confirmation_box()
     if game.run_action_safely(lambda: vs.check_if_image_on_screen(cons.OFFERS_PATH)):
-        print('cc')
         game.run_action_safely(lambda: game.go_from_my_offers_to_market())
     game.timeout_prevention()
     game.run_action_safely(lambda: game.click_item())

@@ -4,19 +4,17 @@ from get_dataset import Get_dataset
 
 
 class Price_analysis(Get_dataset):
-    def __init__(self, gd, order_type):
+    def __init__(self, gd, order_type, item='coin'):
         self.order_type = order_type
         self.counter = gd.counter
         self.current_price = gd.values[order_type][0]
         self.second_price = gd.values[order_type][1]
-        if gd.counter > 0:
-            self.previous_price = gd.first_value_history[order_type][gd.counter - 1]
-        else:
-            self.previous_price = gd.first_value_history[order_type][0]
+        self.previous_price = gd.first_value_history[order_type][0]
         self.prices = np.array(gd.values[order_type])
         self.prices_mean = self.prices[1:2].mean()
         self.current_price_bid = gd.first_value_history['bid'][-1]
         self.current_price_ask = gd.first_value_history['ask'][-1]
+        self.item = item
 
     def self_critique(self):
         price_validity = True
@@ -40,12 +38,12 @@ class Price_analysis(Get_dataset):
 
     def get_percent_diff(self):
         percent = (self.previous_price / self.current_price) * 100
-        return percent
+        return percent, self.previous_price, self.current_price
 
     def calculate_spread(self):
         return (self.current_price_ask * cons.BATCH) - (self.current_price_bid * cons.BATCH)
 
-    def calculate_fee(self):
+    def calculate_fee(self):  # MUDAR AQUI PRA COLOCAR O BATCH DO ITEM #
         fee = ((self.current_price_ask * cons.BATCH) * cons.BUY_FEE) + \
               ((self.current_price_bid * cons.BATCH) * cons.BUY_FEE)
         return fee

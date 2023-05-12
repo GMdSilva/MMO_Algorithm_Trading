@@ -1,23 +1,29 @@
-import datetime
 import matplotlib.pyplot as plt
-import pandas as pd
 import time
+import datetime
+import pandas as pd
+import pytz
 
 import cons
-
-
 def get_plot_data(df, price_type, weekdays):
-    window = 10
-    window_std = 5
+    dt = datetime.datetime.now()#(tz=pytz.UTC)
+    # dt = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+    # start_point = pd.Timestamp(dt)
+    # week_ago = dt - datetime.timedelta(days=7)
+    # start_point_week = pd.Timestamp(week_ago)
+    window = 30
+    window_std = 30
     buy_threshold = -1.0
     sell_threshold = 1.0
     risk_factor = 0.1
     stop_loss = 0.05
 
-    dt = datetime.datetime.now()
-    df = pd.read_csv(df)
+    df = pd.read_csv(df, parse_dates=['Date'])
+    #df['time_delta_day'] = (df['Date'] - start_point_week).dt.total_seconds() / 3600
+    #df['time_delta_week'] = (df['Date'] - start_point).dt.total_seconds() / 3600
     prices = df.loc[df['Type'] == price_type]
     prices_today = prices.loc[prices['Day'] == weekdays[dt.weekday()]]
+
 
     prices_offer = prices['Price'].loc[prices['Class'] == 'Opened']
     prices_sales = prices['Price'].loc[prices['Class'] == 'Closed']
@@ -26,7 +32,8 @@ def get_plot_data(df, price_type, weekdays):
 
     roll_prices = prices['Price'].rolling(window).mean().fillna(method='bfill')
     roll_prices_today = prices_today['Price'].rolling(window).mean().fillna(method='bfill')
-
+    #week_time = prices['time_delta_week']
+    #day_time = prices_today['time_delta_day']
     std_prices = prices['Price'].rolling(window_std).std().fillna(method='bfill')
     std_prices_today = prices_today['Price'].rolling(window_std).std().fillna(method='bfill')
 
@@ -57,7 +64,9 @@ def get_plot_data(df, price_type, weekdays):
         'roll_volume': roll_volume,
         'std_prices_today': std_prices_today,
         'std_prices': std_prices,
-        'z_score': z_score
+        'z_score': z_score,
+        #'week_time': week_time,
+        #'day_time': day_time
     }
     #
     # for i in range(m, n):
@@ -91,18 +100,18 @@ def make_plots():
     price_data_down = get_plot_data('prices_bid.csv', 'bid', cons.WEEKDAYS)
 
     data_to_be_plotted = {
-        1: price_data_up['roll_prices'],
+        1: price_data_up['roll_prices'][50:],
         2: price_data_up['prices_today'],
-        3: price_data_up['z_score'],
-        4: price_data_up['volume_added'],
-        5: price_data_up['volume_sold'],
-        6: price_data_up['roll_volume'],
-        7: price_data_down['roll_prices'],
+        3: price_data_up['z_score'][-50:],
+        4: price_data_up['volume_added'][50:],
+        5: price_data_up['volume_sold'][50:],
+        6: price_data_up['roll_volume'][-50:],
+        7: price_data_down['roll_prices'][50:],
         8: price_data_down['prices_today'],
-        9: price_data_down['z_score'],
-        10: price_data_down['volume_added'],
-        11: price_data_down['volume_sold'],
-        12: price_data_down['roll_volume'],
+        9: price_data_down['z_score'][-50:],
+        10: price_data_down['volume_added'][50:],
+        11: price_data_down['volume_sold'][50:],
+        12: price_data_down['roll_volume'][-50:],
     }
 
     fig = plt.figure(figsize=(12.48, 10.8), dpi=100)
@@ -116,19 +125,15 @@ def make_plots():
     line_colors = ['blue', 'green', 'red',
                    'purple', 'orange', 'pink']
 
+
     for i in range(1, 13):
         ax = fig.add_subplot(4, 3, i)
         ax.set_title(titles[i - 1])
         ax.plot(data_to_be_plotted[i], color=line_colors[(i - 1) % 6])
-
     time.sleep(0.1)
     plt.tight_layout()
     plt.savefig(cons.FIGPATH)
     plt.close()
-
-
-import pandas as pd
-import numpy as np
 
 
 # def calculate_rsi(data, time_period=14):

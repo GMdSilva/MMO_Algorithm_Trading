@@ -4,7 +4,7 @@ import utils
 import run_control
 
 class Get_dataset:
-    def __init__(self, order_type):
+    def __init__(self, order_type, item='coin'):
         self.counter = 0
         self.sold = run_control.check_previous(order_type)['closed']
         self.added = run_control.check_previous(order_type)['opened']
@@ -21,6 +21,7 @@ class Get_dataset:
         self.df_prices = utils.load_dataset(order_type)
         self.order_type = order_type
         self.transaction = None
+        self.item = item
 
     def update_counters(self):
         self.transaction = None
@@ -28,20 +29,19 @@ class Get_dataset:
             self.counter += 1
             self.transaction = 'Start'
         else:
-            if self.values[self.order_type][0] != self.first_value_history[self.order_type][self.counter - 1]:
-                if self.first_value_history[self.order_type][self.counter - 1] not in self.values[self.order_type]:
-                    print(self.values[self.order_type][0], self.first_value_history[self.order_type][self.counter - 1])
+            if self.values[self.order_type][0] != self.first_value_history[self.order_type][0]:
+                if self.first_value_history[self.order_type][0] not in self.values[self.order_type]:
                     self.sold += 1
                     self.counter += 1
                     self.transaction = 'Closed'
-                    print('Closed at ' + str(self.first_value_history[self.order_type][self.counter - 1]))
+                    print('Closed at ' + str(self.first_value_history[self.order_type][1]))
                 else:
-                    print(self.values[self.order_type][0], self.first_value_history[self.order_type][self.counter - 1])
                     self.added += 1
                     self.counter += 1
                     self.transaction = 'Opened'
-                    print('Opened at ' + str(self.first_value_history[self.order_type][self.counter - 1]))
+                    print('Opened at ' + str(self.first_value_history[self.order_type][1]))
         return self
+
 
     def update_dict(self, while_counter):
         dt, iso_str = utils.get_date()
@@ -73,3 +73,7 @@ class Get_dataset:
         self.order_type = order_type
         self.update_and_save(while_counter)
         return self
+
+    def get_percent_diff(self, order_type):
+        percent = (self.first_value_history[order_type][0] / self.values[order_type][0]) * 100
+        return percent, self.first_value_history[order_type][0], self.values[order_type][0]

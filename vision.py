@@ -5,17 +5,20 @@ import numpy as np
 from PIL import Image
 import asyncio
 from win_interface import Windows_Interface
+import utils
 
 class Vision(Windows_Interface):
     def __init__(self):
         super().__init__()
         self.image = self.background_screenshot()
 
-    def capture_text(self, coords):
+    def capture_text(self, coords, update=False):
         x, y, w, h = (coords[0],
                       coords[1],
                       coords[2],
                       coords[3],)
+        if update:
+            self.image = self.background_screenshot()
         image = self.image[y:y + h, x:x + w]
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         sharpen_kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
@@ -73,6 +76,7 @@ class Vision(Windows_Interface):
         except:
             print(lines)
             print('Resource is not a int')
+            utils.get_resource_checks(resource)
         return lines
 
     # @staticmethod
@@ -109,6 +113,5 @@ class Vision(Windows_Interface):
             return flag
             print('achou')
         return flag
-    # cv.imwrite('res.png',img_rgb)
 
 #check_if_image_on_screen('the_devil.JPG')

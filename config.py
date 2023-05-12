@@ -7,7 +7,7 @@ def get_configs():
     return previous_results
 
 image_can_appear = False
-char_name = 'tibia - dorivall intermedlo'
+char_name = 'tibia - jeff bezos'
 coords = get_configs()
 
 def initialize():

@@ -39,8 +39,7 @@ class Setup(Windows_Interface):
         # self.item_letters = {
         #     'key_coins': ['c', 'o', 'i', 'n'],
         # }
-        self.update_specific = ['offers', 'price_box', 'coin_box', 'search_box', 'market_location']
-
+        self.update_specific = ['accept_box_bid', 'accept_box_ask']
     def get_4_points(self, key):
         self.mouse_over_element(key)
         x1, y1 = win32api.GetCursorPos()
@@ -83,10 +82,10 @@ class Setup(Windows_Interface):
         x, y = win32api.GetCursorPos()
         self.mouse_out(key)
         coords = win32gui.ScreenToClient(self.hwnd, (x, y))
-        return coords
+        return coords11
 
     def update_coords(self):
-        for key in self.click_coords:
+        for key in self.update_specific:
             print(f"Now setting {key}")
             coords = self.get_location(key)
             self.click_coords.update({key: coords})
@@ -231,13 +230,13 @@ class Setup(Windows_Interface):
                 time.sleep(0.5)
 
 
-def main():
-    st = Setup()
-    #st.update_coords()
-    st.update_4_coords()
-    #b = vision.capture_text(st.background_screenshot(),st.ss_coordinates['market_location'])
-    # st.click_coords.update(st.ss_coordinates)
-    # st.click_coords.update(st.item_letters)
-    print(st.click_coords)
 
-main()
+def main():
+
+    st = Setup()
+    st.update_coords()
+    #st.update_4_coords()
+    print(st.click_coords)
+    file = open('config.txt', 'wb')
+    pickle.dump(st.click_coords, file)
+    file.close()
